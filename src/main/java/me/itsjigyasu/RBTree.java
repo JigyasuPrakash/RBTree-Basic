@@ -67,4 +67,112 @@ public class RBTree{
         printInorder(node.right);
     }
 
+    // Simple BST Insertion
+    public void insert(int value) {
+        Node z = new Node(value);
+        Node y = NIL;
+        Node x = root;
+
+        while (x != NIL) {
+            y = x;
+            if (z.data < x.data) {
+                x = x.left;
+            } else {
+                x = x.right;
+            }
+        }
+        z.parent = y;
+        if (y == NIL) {
+            this.root = z;
+        } else if (z.data < y.data) {
+            y.left = z;
+        } else {
+            y.right = z;
+        }
+        z.right = NIL;
+        z.left = NIL;
+        z.color = 'R';
+
+        insertFixup(z);
+    }
+
+    // Red Black Tree Inser Fixup
+    void insertFixup(Node z) {
+        Node y = NIL;
+        while (z.parent.color == 'R') {
+            if (z.parent == z.parent.parent.left) {
+                y = z.parent.parent.right;
+                if (y.color == 'R') {
+                    z.parent.color = 'B';
+                    y.color = 'B';
+                    z.parent.parent.color = 'R';
+                    z = z.parent.parent;
+                } else {
+                    if (z == z.parent.right) {
+                        z = z.parent;
+                        leftRotate(z);
+                    }
+                    z.parent.color = 'B';
+                    z.parent.parent.color = 'R';
+                    rightRotate(z.parent.parent);
+                }
+            } else {
+                y = z.parent.parent.left;
+                if (y.color == 'R') {
+                    z.parent.color = 'B';
+                    y.color = 'B';
+                    z.parent.parent.color = 'R';
+                    z = z.parent.parent;
+                } else {
+                    if (z == z.parent.left) {
+                        z = z.parent;
+                        rightRotate(z);
+                    }
+                    z.parent.color = 'B';
+                    z.parent.parent.color = 'B';
+                    leftRotate(z.parent.parent);
+                }
+            }
+        }
+        this.root.color = 'B';
+    }
+
+    // Left Rotate
+    void leftRotate(Node x) {
+        Node y = x.right;
+        x.right = y.left;
+        if (y.left != NIL) {
+            y.left.parent = x;
+        }
+        y.parent = x.parent;
+        if (x.parent == NIL) {
+            this.root = y;
+        } else if (x == x.parent.left) {
+            x.parent.left = y;
+        } else {
+            x.parent.right = y;
+        }
+        y.left = x;
+        x.parent = y;
+    }
+
+    // Right Rotate
+    void rightRotate(Node x) {
+        Node y = x.left;
+        x.left = y.right;
+        if (y.right != NIL) {
+            y.right.parent = x;
+        }
+        y.parent = x.parent;
+        if (x.parent == NIL) {
+            this.root = y;
+        } else if (x == x.parent.right) {
+            x.parent.right = y;
+        } else {
+            x.parent.left = y;
+        }
+        y.right = x;
+        x.parent = y;
+    }
+
 }
