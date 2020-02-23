@@ -174,5 +174,132 @@ public class RBTree{
         y.right = x;
         x.parent = y;
     }
+    
+    // basic BST deletion
+    public void delete(int key) {
+        Node z = getNode(key);
+        if (z == NIL) {
+            System.out.println("Cannot delete, Element Not Found!!");
+            return;
+        }
+        Node x;
+        Node y = z;
+        char YOriginalColor = y.color;
+        if (z.left == NIL) {
+            x = z.right;
+            RBTransplant(z, z.right);
+        } else if (z.right == NIL) {
+            x = z.left;
+            RBTransplant(z, z.left);
+        } else {
+            y = treeMinimum(z.right);
+            YOriginalColor = y.color;
+            x = y.right;
+            if (y.parent == z) {
+                x.parent = y;
+            } else {
+                RBTransplant(y, y.right);
+                y.right = z.right;
+                y.right.parent = y;
+            }
+            RBTransplant(z, y);
+            y.left = z.left;
+            y.left.parent = y;
+            y.color = z.color;
+        }
+        if (YOriginalColor == 'B') {
+            // x.color = 'B';
+            deleteFixup(x);
+        }
+    }
+
+    // Red Black Tree Delete Fixup
+    void deleteFixup(Node x) {
+        Node w = NIL;
+        while (x != this.root && x.color == 'B') {
+            if (x == x.parent.left) {
+                w = w.parent.right;
+                if (w.color == 'R') {
+                    w.color = 'B';
+                    x.parent.color = 'R';
+                    leftRotate(x.parent);
+                    w = x.parent.right;
+                }
+                if (w.left.color == 'B' && w.right.color == 'B') {
+                    w.color = 'R';
+                    x = x.parent;
+                } else {
+                    if (w.right.color == 'B') {
+                        w.left.color = 'R';
+                        w.color = 'R';
+                        rightRotate(w);
+                        w = x.parent.right;
+                    }
+                    w.color = x.parent.color;
+                    x.parent.color = 'B';
+                    w.right.color = 'B';
+                    leftRotate(x.parent);
+                    x = this.root;
+                }
+            } else {
+                w = x.parent.left;
+                if (w.color == 'R') {
+                    w.color = 'B';
+                    x.parent.color = 'R';
+                    rightRotate(x.parent);
+                    w = x.parent.left;
+                }
+                if (w.right.color == 'B' && w.left.color == 'B') {
+                    w.color = 'R';
+                    x = x.parent;
+                } else {
+                    if (w.left.color == 'B') {
+                        w.right.color = 'R';
+                        w.color = 'R';
+                        leftRotate(w);
+                        w = x.parent.left;
+                    }
+                    w.color = x.parent.color;
+                    x.parent.color = 'B';
+                    w.left.color = 'B';
+                    rightRotate(x.parent);
+                    x = this.root;
+                }
+            }
+        }
+        this.root.color = 'B';
+    }
+
+    // Other Tree functions
+    Node minValue(Node n) {
+        Node current = n;
+        while (current.left != NIL) {
+            current = current.left;
+        }
+        return current;
+    }
+
+    void RBTransplant(Node u, Node v) {
+        if (u.parent == NIL) {
+            this.root = v;
+        } else if (u == u.parent.left) {
+            u.parent.left = v;
+        } else {
+            u.parent.right = v;
+        }
+        v.parent = u.parent;
+    }
+
+    Node treeMinimum(Node n) {
+        if (n.right != NIL) {
+            return minValue(n.right);
+        }
+        Node p = n.parent;
+        while (p != NIL && n == p.right) {
+            n = p;
+            p = p.parent;
+        }
+        return p;
+    }
 
 }

@@ -5,7 +5,7 @@ public final class App {
 
     public static void main(String[] args) {
         RBTree rbt = new RBTree();
-        
+
          //inserting below keys to RBTree
          rbt.insert(41);
          rbt.insert(38);
@@ -16,5 +16,10 @@ public final class App {
  
          System.out.println("Inorder: ");
          rbt.printInorder(rbt.getRootNode());
+         
+        //Deleting a key from RBTree
+        rbt.delete(31);
+        System.out.println("\nAfter Delete Inorder: ");
+        rbt.printInorder(rbt.getRootNode());
     }
 }
