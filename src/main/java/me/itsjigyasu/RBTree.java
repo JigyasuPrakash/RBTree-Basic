@@ -69,7 +69,13 @@ public class RBTree{
 
     // Simple BST Insertion
     public void insert(int value) {
-        Node z = new Node(value);
+
+        Node z = getNode(value);
+        if(z.data != -1){
+            System.out.println("Cannot insert duplicate keys!!");
+            return;
+        }
+        z = new Node(value);
         Node y = NIL;
         Node x = root;
 
@@ -94,6 +100,7 @@ public class RBTree{
         z.color = 'R';
 
         insertFixup(z);
+        System.out.println("Inserted Successfully");
     }
 
     // Red Black Tree Inser Fixup
@@ -211,6 +218,7 @@ public class RBTree{
             // x.color = 'B';
             deleteFixup(x);
         }
+        System.out.println("Deleted Successfully!");
     }
 
     // Red Black Tree Delete Fixup
